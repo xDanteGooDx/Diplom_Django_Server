@@ -96,6 +96,9 @@ class Studgroup(models.Model):
         managed = False
         db_table = 'StudGroup'
 
+    def __str__(self):
+        return self.title
+
 
 class Student(models.Model):
     group = models.ForeignKey(Studgroup, models.DO_NOTHING, db_column='group', blank=True, null=True)

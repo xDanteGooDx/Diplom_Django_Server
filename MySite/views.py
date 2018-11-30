@@ -39,22 +39,27 @@ def logout(request):
 def studReg(request):
     args = {}
     regForm = RegForm
-    studForm =StudRegForm
+    studForm = StudRegForm
     if request.method == 'POST':
         form = RegForm(request.POST)
         studForm = StudRegForm(request.POST)
-        if regForm.is_valid():
-            user = form.save(commit=False)
-            user.profile.patronymic = form.cleaned_data.get('patronymic')
-            user.is_active = False
-            user.save()
-            student = studForm.save(commit=False)
-            student.profile_id = user.profile.id
-            studForm.save()
-            return HttpResponse("<h1>student</h1>")
+        if form.is_valid():
+            if studForm.is_valid():
+                user = form.save(commit=False)
+                user.profile.patronymic = form.cleaned_data.get('patronymic')
+                user.is_active = False
+                user.save()
+                student = studForm.save(commit=False)
+                student.profile_id = user.profile.id
+                studForm.save()
+                return HttpResponse("<h1>student</h1>")
+            else:
+                args['errors'] = form.errors + studForm.errors
         else:
-            args['errors'] = form.errors
+            args['errors'] = form.errors + studForm.errors
+
             return render(request, "MySite/studentRegistration.html", {'regForm': regForm,
                                                                        'studForm': studForm, 'args': args})
     else:
-        return render(request, "MySite/studentRegistration.html", {'regForm': regForm, 'studForm': studForm, 'args': args})
+        return render(request, "MySite/studentRegistration.html",
+                      {'regForm': regForm, 'studForm': studForm, 'args': args})
