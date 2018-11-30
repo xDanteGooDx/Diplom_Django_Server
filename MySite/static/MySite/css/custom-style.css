@@ -1,0 +1,16 @@
+/* Show it is fixed to the top */
+body {
+  padding-top: 4.5rem;
+}
+
+.form-signin{
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+}
+
+.error-message{
+    color: red;
+    font-style: italic;
+}
