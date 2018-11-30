@@ -15,9 +15,8 @@
             <input class="form-control" id="password" required="" name="password" type="password"
                    placeholder="Password">
             <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
-            <a href="#" class="">Регистрация
-
-            </a>
+            <p><a href="{% url 'studReg' %}" class="">Регистрация для студентов</a></p>
+            <p><a href="#">Регистрация для преподавателей</a></p>
         </form>
     </div>
 {% endblock %}

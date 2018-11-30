@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_protect
 # Create your views here.
 
 def startPage(request):
-    return render(request, "MySite/startPage.html", {'username': auth.get_user(request).username})
+    return render(request, "MySite/startPage.html", {'args': auth.get_user(request)})
 
 
 @csrf_protect
@@ -30,3 +30,8 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return redirect("/")
+
+
+def studReg(request):
+    args = {}
+    return render(request, "MySite/studentRegistration.html", args)

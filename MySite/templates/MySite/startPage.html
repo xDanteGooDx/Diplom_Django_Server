@@ -8,6 +8,9 @@
             </div>
             <p class="lead text-muted">Здесь вы надете литературу для IT-специальностей, а так же сожете пройти тесты,
                 чтобы определить ваш уровень знаний</p>
+            {% if args.is_superuser %}
+                <a class="btn btn-lg btn-primary" href="/admin" role="button">Войти в админ.панель</a>
+            {% endif %}
         </div>
     </main>
 {% endblock %}

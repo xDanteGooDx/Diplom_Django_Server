@@ -30,15 +30,24 @@
                 <a class="nav-link" href="#">О проекте</a>
             </li>
         </ul>
-        {% if username %}
-            <a class="btn btn-outline-primary" href="{% url 'logout' %}">Выйти ({{ username }})</a>
+        {% if args.username %}
+            <a class="btn btn-outline-primary" href="{% url 'logout' %}">Выйти ({{ args.username }})</a>
         {% else %}
             <a class="btn btn-outline-primary" href="{% url 'login' %}">Войти</a>
         {% endif %}
     </div>
 </nav>
-{% block content %}
-{% endblock %}
+<div class="custom-body">
+    {% block content %}
+    {% endblock %}
+</div>
+<footer class="my-5 pt-5 text-muted text-center text-small custom-footer">
+    <ul class="list-inline">
+        <li class="list-inline-item"><a href="{% url 'startPage' %}">Главная страница</a></li>
+        <li class="list-inline-item"><a href="#">Помощь</a></li>
+        <li class="list-inline-item"><a href="#">О проекте</a></li>
+    </ul>
+</footer>
 <script src="{% static "MySite/js/bootstrap.min.js" %}"></script>
 </body>
 </html>
