@@ -46,11 +46,12 @@ def studReg(request):
         studForm = StudRegForm(request.POST)
         profile = ProfileForm(request.POST)
         if form.is_valid() and studForm.is_valid() and profile.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
+            user = form.save()
+            # user.is_active = False
+            # user.save()
             user.profile.patronymic = request.POST.get('patronymic')
-            user.profile.birth = request.POST.get('birth')
+            user.profile.birth = '{0}-{1}-{2}'.format(request.POST.get('birth_year'), request.POST.get('birth_month'),
+                                                      request.POST.get('birth_day'))
             user.profile.save()
             student = studForm.save(commit=False)
             student.profile_id = user.profile.id

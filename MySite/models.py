@@ -81,6 +81,8 @@ class StudGroup(models.Model):
 
     class Meta:
         db_table = 'StudGroup'
+        verbose_name = 'Группа студентов'
+        verbose_name_plural = 'Группы студентов'
 
     def __str__(self):
         return self.title
@@ -103,8 +105,8 @@ class Test(models.Model):
 
 
 class TestResult(models.Model):
-    id_test = models.OneToOneField(Test, models.CASCADE)
-    id_student = models.OneToOneField(Student, models.CASCADE)
+    id_test = models.OneToOneField(Test, models.CASCADE, null=True)
+    id_student = models.OneToOneField(Student, models.CASCADE, null=True)
     attempts = models.IntegerField()
     score = models.IntegerField()
 
