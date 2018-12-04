@@ -52,6 +52,9 @@ class Profile(models.Model):
     birth = models.DateField(blank=True, null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
+    class Meta:
+        db_table = 'Profile'
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
