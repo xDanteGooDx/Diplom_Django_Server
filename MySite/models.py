@@ -6,7 +6,7 @@ from django.dispatch import receiver
 
 class Answer(models.Model):
     answer_text = models.TextField()
-    id_question = models.ForeignKey('Question', models.DO_NOTHING, db_column='id_question')
+    id_question = models.ForeignKey('Question', models.CASCADE)
     is_right = models.BooleanField()
 
     class Meta:
@@ -15,7 +15,7 @@ class Answer(models.Model):
 
 class Book(models.Model):
     title_book = models.TextField()
-    author = models.ForeignKey('Educator', models.DO_NOTHING, db_column='author', blank=True, null=True)
+    author = models.ForeignKey('Educator', models.SET_NULL, blank=True, null=True)
 
     class Meta:
         db_table = 'Book'
@@ -23,7 +23,7 @@ class Book(models.Model):
 
 class Chapter(models.Model):
     chapter_title = models.TextField()
-    id_book = models.ForeignKey(Book, models.DO_NOTHING, db_column='id_book')
+    id_book = models.ForeignKey(Book, models.CASCADE)
 
     class Meta:
         db_table = 'Chapter'
@@ -40,7 +40,7 @@ class Educator(models.Model):
 
 class File(models.Model):
     path_file = models.CharField(max_length=255)
-    id_text = models.ForeignKey('Text', models.DO_NOTHING, db_column='id_text')
+    id_text = models.ForeignKey('Text', models.CASCADE)
     format = models.CharField(max_length=5, blank=True, null=True)
 
     class Meta:
@@ -66,7 +66,7 @@ def save_user_profile(sender, instance, **kwargs):
 
 class Question(models.Model):
     question_text = models.TextField()
-    id_test = models.ForeignKey('Test', models.DO_NOTHING, db_column='id_test')
+    id_test = models.ForeignKey('Test', models.CASCADE)
     get_score = models.IntegerField()
 
     class Meta:
@@ -84,7 +84,7 @@ class StudGroup(models.Model):
 
 
 class Student(models.Model):
-    group = models.ForeignKey(StudGroup, models.DO_NOTHING, db_column='group', blank=True, null=True)
+    group = models.ForeignKey(StudGroup, models.SET_NULL, blank=True, null=True)
     profile = models.OneToOneField('Profile', on_delete=models.CASCADE)
 
     class Meta:
@@ -93,15 +93,15 @@ class Student(models.Model):
 
 class Test(models.Model):
     test_title = models.TextField()
-    author = models.ForeignKey(Educator, models.DO_NOTHING, db_column='author', blank=True, null=True)
+    author = models.ForeignKey(Educator, models.SET_NULL, blank=True, null=True)
 
     class Meta:
         db_table = 'Test'
 
 
 class TestResult(models.Model):
-    id_test = models.OneToOneField(Test, models.DO_NOTHING, db_column='id_test')
-    id_student = models.OneToOneField(Student, models.DO_NOTHING, db_column='id_student')
+    id_test = models.OneToOneField(Test, models.CASCADE)
+    id_student = models.OneToOneField(Student, models.CASCADE)
     attempts = models.IntegerField()
     score = models.IntegerField()
 
@@ -112,7 +112,7 @@ class TestResult(models.Model):
 
 class Text(models.Model):
     text_source = models.TextField()
-    id_chapter = models.ForeignKey(Chapter, models.DO_NOTHING, db_column='id_chapter')
+    id_chapter = models.ForeignKey(Chapter, models.CASCADE)
 
     class Meta:
         db_table = 'Text'
