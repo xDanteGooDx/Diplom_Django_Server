@@ -56,7 +56,7 @@ def studReg(request):
             else:
                 args['errors'] = form.errors + studForm.errors
         else:
-            args['errors'] = form.errors + studForm.errors
+            args['errors'] = form.errors
 
             return render(request, "MySite/studentRegistration.html", {'regForm': regForm,
                                                                        'studForm': studForm, 'args': args})

@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'Diplom.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',
-        'NAME': 'Portal_DB',
+        'NAME': 'DB_for_portal',
         'USER': '',
         'PASSWORD': '',
         'HOST': 'XDANTEGOODX\SQLEXPRESS',
@@ -109,9 +109,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 

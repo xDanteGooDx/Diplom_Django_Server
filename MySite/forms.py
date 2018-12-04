@@ -1,6 +1,9 @@
+import datetime
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.forms import widgets
 
 from MySite.models import Student
 
@@ -9,7 +12,8 @@ class RegForm(UserCreationForm):
     patronymic = forms.CharField(label='Отчество', required=False, widget=forms.
                                  TextInput(attrs={'class': 'form-control'}))
     birth = forms.DateField(label='День Рождения', required=False,
-                            widget=forms.DateInput(attrs={'class': 'form-control'}))
+                            widget=widgets.SelectDateWidget(attrs={'class': 'col-md-3 ml-3 form-control'},
+                                                            years=range(1950, datetime.datetime.now().year + 1)))
 
     class Meta:
         model = User
