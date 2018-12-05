@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import widgets
 
-from MySite.models import Student, Profile
+from MySite.models import Student, Profile, Educator
 
 
 class RegForm(UserCreationForm):
@@ -43,7 +43,7 @@ class ProfileForm(forms.ModelForm):
         widgets = {
             'patronymic': forms.TextInput(attrs={'class': 'form-control'}),
             'birth': widgets.SelectDateWidget(attrs={'class': 'col-md-3 ml-3 form-control'},
-                                              years=range(1950, datetime.datetime.now().year + 1))
+                                              years=range(datetime.datetime.now().year, 1950, -1))
         }
 
         def __init__(self, *args, **kwargs):
@@ -62,3 +62,13 @@ class StudRegForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(StudRegForm, self).__init__(*args, **kwargs)
         self.fields['group'].required = True
+
+
+class EduRegForm(forms.ModelForm):
+    class Meta:
+        model = Educator
+        fields = ('scientific_degree', 'subject_area')
+        widgets = {
+            'scientific_degree': forms.TextInput(attrs={'class': 'form-control'}),
+            'subject_area': forms.TextInput(attrs={'class': 'form-control'}),
+        }

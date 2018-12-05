@@ -16,7 +16,7 @@
                    placeholder="Password">
             <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
             <p><a href="{% url 'studReg' %}" class="">Регистрация для студентов</a></p>
-            <p><a href="#">Регистрация для преподавателей</a></p>
+            <p><a href="{% url 'eduReg' %}">Регистрация для преподавателей</a></p>
         </form>
     </div>
 {% endblock %}

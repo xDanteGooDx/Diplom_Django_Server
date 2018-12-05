@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
 
 # Create your views here.
-from MySite.forms import RegForm, StudRegForm, ProfileForm
+from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm
 
 
 def startPage(request):
@@ -76,3 +76,36 @@ def getBooks(request):
         return render(request, "MySite/books.html", {'args': user})
     else:
         return render(request, "MySite/haventAccess.html", {'args': user})
+
+
+@csrf_protect
+def eduReg(request):
+    args = {}
+    regForm = RegForm
+    profile = ProfileForm
+    if request.method == 'POST':
+        form = RegForm(request.POST)
+        profile = ProfileForm(request.POST)
+        eduForm = EduRegForm(request.POST)
+        if form.is_valid() and profile.is_valid():
+            user = form.save()
+            # user.is_active = False
+            # user.save()
+            user.profile.patronymic = request.POST.get('patronymic')
+            user.profile.birth = '{0}-{1}-{2}'.format(request.POST.get('birth_year'), request.POST.get('birth_month'),
+                                                      request.POST.get('birth_day'))
+            user.profile.save()
+            my_group = Group.objects.get(name='Educators')
+            my_group.user_set.add(user)
+            educator = eduForm.save(commit=False)
+            educator.profile_id = user.profile.id
+            educator.save()
+            return render(request, "MySite/successfulRegistration.html", {'user': user})
+        else:
+            args['errors_form'] = form.errors
+            args['errors_profile'] = profile.errors
+            return render(request, "MySite/educatorRegistration.html",
+                          {'regForm': regForm, 'args': args, 'profile': profile})
+    else:
+        return render(request, "MySite/educatorRegistration.html",
+                      {'regForm': regForm, 'args': args, 'profile': profile})
