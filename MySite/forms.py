@@ -26,6 +26,14 @@ class RegForm(UserCreationForm):
         self.fields['last_name'].required = True
         self.fields['first_name'].required = True
         self.fields['email'].required = True
+        self.fields['email'].unique = True
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        username = self.cleaned_data.get('username')
+        if email and User.objects.filter(email=email).exclude(username=username).exists():
+            raise forms.ValidationError('Такой email уже используется')
+        return email
 
 
 class ProfileForm(forms.ModelForm):

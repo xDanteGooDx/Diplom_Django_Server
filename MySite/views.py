@@ -1,7 +1,8 @@
 from django.contrib import auth
+from django.contrib.auth.models import Group, User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.template.context_processors import csrf
+
 
 from django.views.decorators.csrf import csrf_protect
 
@@ -53,15 +54,26 @@ def studReg(request):
             user.profile.birth = '{0}-{1}-{2}'.format(request.POST.get('birth_year'), request.POST.get('birth_month'),
                                                       request.POST.get('birth_day'))
             user.profile.save()
+            my_group = Group.objects.get(name='Students')
+            my_group.user_set.add(user)
             student = studForm.save(commit=False)
             student.profile_id = user.profile.id
             studForm.save()
             return HttpResponse("<h1>student</h1>")
         else:
-            args['errors_1'] = form.errors
-            args['errors_2'] = studForm.errors
+            args['errors_form'] = form.errors
+            args['errors_stud'] = studForm.errors
+            args['errors_profile'] = profile.errors
             return render(request, "MySite/studentRegistration.html",
                           {'regForm': regForm, 'studForm': studForm, 'args': args, 'profile': profile})
     else:
         return render(request, "MySite/studentRegistration.html",
                       {'regForm': regForm, 'studForm': studForm, 'args': args, 'profile': profile})
+
+
+def getBooks(request):
+    user = request.user
+    if user.has_perm('MySite.read_Book'):
+        return HttpResponse("<h1>Yes Books</h1>")
+    else:
+        return HttpResponse("<h1>No Books</h1>")

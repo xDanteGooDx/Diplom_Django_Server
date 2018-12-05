@@ -4,7 +4,9 @@
 
 {% block content %}
     <h3 class="text-center">Регистрация для студентов</h3>
-    {{ args.errors }}
+    <label class="error-message">{{ args.errors_form }}</label>
+    <label class="error-message">{{ args.errors_stud }}</label>
+    <label class="error-message">{{ args.errors_profile }}</label>
     <div class="container col-md-8">
         <form class="needs-validation" novalidate action="{% url 'studReg' %}" method="post">
             {% csrf_token %}

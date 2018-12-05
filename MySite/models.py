@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -19,6 +19,10 @@ class Book(models.Model):
 
     class Meta:
         db_table = 'Book'
+        permissions = (
+            ('read_Book', 'Can read book'),
+            ('write_Book', 'Can write book'),
+        )
 
 
 class Chapter(models.Model):
@@ -102,6 +106,10 @@ class Test(models.Model):
 
     class Meta:
         db_table = 'Test'
+        permissions = (
+            ('read_Test', 'Can read test'),
+            ('write_Test', 'Can write test'),
+        )
 
 
 class TestResult(models.Model):
