@@ -3,7 +3,6 @@ from django.contrib.auth.models import Group, User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-
 from django.views.decorators.csrf import csrf_protect
 
 # Create your views here.
@@ -59,7 +58,7 @@ def studReg(request):
             student = studForm.save(commit=False)
             student.profile_id = user.profile.id
             studForm.save()
-            return HttpResponse("<h1>student</h1>")
+            return render(request, "MySite/successfulRegistration.html", {'user': user})
         else:
             args['errors_form'] = form.errors
             args['errors_stud'] = studForm.errors
@@ -72,8 +71,8 @@ def studReg(request):
 
 
 def getBooks(request):
-    user = request.user
+    user = auth.get_user(request)
     if user.has_perm('MySite.read_Book'):
-        return HttpResponse("<h1>Yes Books</h1>")
+        return render(request, "MySite/books.html", {'args': user})
     else:
-        return HttpResponse("<h1>No Books</h1>")
+        return render(request, "MySite/haventAccess.html", {'args': user})
