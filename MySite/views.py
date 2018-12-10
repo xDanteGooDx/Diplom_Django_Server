@@ -109,3 +109,9 @@ def eduReg(request):
     else:
         return render(request, "MySite/educatorRegistration.html",
                       {'regForm': regForm, 'args': args, 'profile': profile})
+
+
+def addBook(request):
+    args = {}
+    args['username'] = auth.get_user(request)
+    return render(request, "MySite/addBook.html", {'args': args})

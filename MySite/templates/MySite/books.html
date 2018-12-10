@@ -1,10 +1,20 @@
 {% extends 'MySite/template.html' %}
 
 {% block content %}
-{#    <nav class="nav nav-underline">#}
-{#        <a class="nav-link active" href="#">Dashboard</a>#}
-{#    </nav>#}
-    <div class="my-3 p-3 bg-white rounded shadow-sm">
-        <h6 class="border-bottom border-gray pb-2 mb-0">Книги, которые вы можете прочитать:</h6>
-    </div>
+    <main class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <a></a>
+            </div>
+            <div class="d-block text-right mt-3 order-md-2">
+                <a class="btn-block btn btn-primary" href="{% url 'addBook' %}">Добавить книгу</a>
+            </div>
+        </div>
+        {#    <nav class="nav nav-underline">#}
+        {#        <a class="nav-link active" href="#">Dashboard</a>#}
+        {#    </nav>#}
+        <div class="my-3 p-3 bg-white rounded shadow-sm">
+            <h6 class="border-bottom border-gray pb-2 mb-0">Книги, которые вы можете прочитать:</h6>
+        </div>
+    </main>
 {% endblock %}
