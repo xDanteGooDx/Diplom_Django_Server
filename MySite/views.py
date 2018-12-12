@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
 
 # Create your views here.
-from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm
+from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm, UploadFileForm
 
 
 def startPage(request):
@@ -78,6 +78,14 @@ def getBooks(request):
         return render(request, "MySite/haventAccess.html", {'args': user})
 
 
+def getTests(request):
+    user = auth.get_user(request)
+    if user.has_perm('MySite.read_Test'):
+        return render(request, "MySite/tests.html", {'args': user})
+    else:
+        return render(request, "MySite/haventAccess.html", {'args': user})
+
+
 @csrf_protect
 def eduReg(request):
     args = {}
@@ -111,7 +119,23 @@ def eduReg(request):
                       {'regForm': regForm, 'args': args, 'profile': profile})
 
 
+@csrf_protect
+def addTest(request):
+    args = {}
+    args['username'] = auth.get_user(request)
+    if request.method == 'POST':
+        a = 15
+    else:
+        form = UploadFileForm()
+    return render(request, "MySite/addTest.html", {'args': args, 'form': form})
+
+
+@csrf_protect
 def addBook(request):
     args = {}
     args['username'] = auth.get_user(request)
-    return render(request, "MySite/addBook.html", {'args': args})
+    if request.method == 'POST':
+        a = 15
+    else:
+        form = UploadFileForm()
+    return render(request, "MySite/addBook.html", {'args': args, 'form': form})

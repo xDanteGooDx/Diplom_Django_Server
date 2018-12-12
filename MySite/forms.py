@@ -72,3 +72,8 @@ class EduRegForm(forms.ModelForm):
             'scientific_degree': forms.TextInput(attrs={'class': 'form-control'}),
             'subject_area': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+class UploadFileForm(forms.Form):
+    title = forms.CharField(max_length=50)
+    file = forms.FileField()

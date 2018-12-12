@@ -21,7 +21,7 @@
                 <a class="nav-link" href="{% url 'getBooks' %}">Книги</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Тесты</a>
+                <a class="nav-link" href="{% url 'getTests' %}">Тесты</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Помощь</a>
@@ -48,6 +48,9 @@
         <li class="list-inline-item"><a href="#">О проекте</a></li>
     </ul>
 </footer>
+{% block script %}
+{% endblock %}
 <script src="{% static "MySite/js/bootstrap.min.js" %}"></script>
+<script src="{% static "MySite/js/jquery-3.3.1.slim.min.js" %}"></script>
 </body>
 </html>

@@ -1,14 +1,14 @@
-{% extends 'MySite/template.html'%}
+{% extends 'MySite/template.html' %}
 
 {% block content %}
     <main role="main" class="container">
         <div class="jumbotron text-center">
             <div class="pb-md-4 text-center">
                 <h1>У Вас нету доступа к этой странице</h1>
-                <p>Пожалуйста, авторизируйтесь или пройдите регистрацию:</p>
             </div>
             {% if args.is_anonymous %}
-            <a class="btn btn-lg btn-primary" href="{% url 'login' %}" role="button">Войти</a>
+                <p>Пожалуйста, авторизируйтесь или пройдите регистрацию:</p>
+                <a class="btn btn-lg btn-primary" href="{% url 'login' %}" role="button">Войти</a>
             {% endif %}
         </div>
     </main>
