@@ -15,7 +15,7 @@ class Answer(models.Model):
 
 class Book(models.Model):
     title_book = models.TextField()
-    author = models.OneToOneField(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'Book'
@@ -102,7 +102,7 @@ class Student(models.Model):
 
 class Test(models.Model):
     test_title = models.TextField()
-    author = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     about = models.TextField()
 
     class Meta:
@@ -114,8 +114,8 @@ class Test(models.Model):
 
 
 class TestResult(models.Model):
-    id_test = models.OneToOneField(Test, models.CASCADE, null=True)
-    id_student = models.OneToOneField(User, on_delete=models.CASCADE)
+    id_test = models.ForeignKey(Test, models.CASCADE, null=True)
+    id_student = models.ForeignKey(User, on_delete=models.CASCADE)
     attempts = models.IntegerField()
     score = models.IntegerField()
 
@@ -126,7 +126,7 @@ class TestResult(models.Model):
 
 class Text(models.Model):
     text_source = models.TextField()
-    id_chapter = models.ForeignKey(Chapter, models.CASCADE)
+    id_chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'Text'

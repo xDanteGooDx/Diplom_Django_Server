@@ -160,7 +160,7 @@ def addTest(request):
                 num = None
             if num is not None:
                 num += 1
-        return HttpResponse("<h1>Тест успешно добавлен</h1>")
+        return render(request, "MySite/successfulAddTest.html", {'args': args})
     else:
         return render(request, "MySite/addTest.html", {'args': args})
 
