@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_protect
 
 # Create your views here.
 from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm, UploadFileForm
+from MySite.models import Test, Question, Answer
 
 
 def startPage(request):
@@ -124,10 +125,44 @@ def addTest(request):
     args = {}
     args['username'] = auth.get_user(request)
     if request.method == 'POST':
-        a = 15
+        newTest = Test()
+        newTest.test_title = request.POST.get('name_test')
+        newTest.about = request.POST.get('about_test')
+        newTest.author = auth.get_user(request)
+        newTest.save()
+        num = 1
+        while num is not None:
+            newQuestion = Question()
+            search = request.POST.get('question_' + str(num))
+            if search is not None:
+                newQuestion.question_text = search
+                newQuestion.get_score = 1
+                newQuestion.id_test = newTest
+                newQuestion.save()
+                num2 = 1
+                while num2 is not None:
+                    newAnswer = Answer()
+                    search = request.POST.get('answer_' + str(num) + '_' + str(num2))
+                    if search is not None:
+                        newAnswer.answer_text = search
+                        newAnswer.id_question = newQuestion
+                        search = request.POST.get('checkbox_' + str(num) + '_' + str(num2))
+                        if search is not None:
+                            newAnswer.is_right = True
+                        else:
+                            newAnswer.is_right = False
+                        newAnswer.save()
+                    else:
+                        num2 = None
+                    if num2 is not None:
+                        num2 += 1
+            else:
+                num = None
+            if num is not None:
+                num += 1
+        return HttpResponse("<h1>Тест успешно добавлен</h1>")
     else:
-        form = UploadFileForm()
-    return render(request, "MySite/addTest.html", {'args': args, 'form': form})
+        return render(request, "MySite/addTest.html", {'args': args})
 
 
 @csrf_protect

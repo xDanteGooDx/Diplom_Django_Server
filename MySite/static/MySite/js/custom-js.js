@@ -6,15 +6,15 @@ function addQuestion() {
         "                    <label>\n" +
         "                        Вопрос " + num + "\n" +
         "                    </label>\n" +
-        "                    <input type=\"text\" class=\"form-control\" required id='id_question_" + num + "'>\n" +
+        "                    <input type=\"text\" class=\"form-control\" required name='question_" + num + "'>\n" +
         "                    Ответы:\n" +
         "                    <div class=\"input-group mt-3 mb-3\">\n" +
         "                        <div class=\"input-group-prepend\">\n" +
         "                        <span class=\"input-group-text\">\n" +
-        "                            <input type=\"checkbox\" id='id_checkbox_" + num + "_1'>\n" +
+        "                            <input type=\"checkbox\" name='checkbox_" + num + "_1'>\n" +
         "                        </span>\n" +
         "                        </div>\n" +
-        "                        <input type=\"text\" class=\"form-control\" required id='id_answer_" + num + "_1'>\n" +
+        "                        <input type=\"text\" class=\"form-control\" required name='answer_" + num + "_1'>\n" +
         "                    </div>\n" +
         "                </div>" +
         "                <div class=\"row\">\n" +
@@ -33,10 +33,10 @@ function addAnswer(x) {
     newdiv.innerHTML = "<div class=\"input-group mt-3 mb-3\">\n" +
         "                        <div class=\"input-group-prepend\">\n" +
         "                        <span class=\"input-group-text\">\n" +
-        "                            <input type=\"checkbox\" id='id_checkbox_"+ x + "_" + num_ans + "'>\n" +
+        "                            <input type=\"checkbox\" name='checkbox_"+ x + "_" + num_ans + "'>\n" +
         "                        </span>\n" +
         "                        </div>\n" +
-        "                        <input type=\"text\" class=\"form-control\" required id='id_answer_" + x + "_" + num_ans + "'>\n" +
+        "                        <input type=\"text\" class=\"form-control\" required name='answer_" + x + "_" + num_ans + "'>\n" +
         "                    </div>"
     document.getElementById("question_"+x).appendChild(newdiv);
     return false;
