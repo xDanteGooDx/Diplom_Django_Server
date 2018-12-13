@@ -1,5 +1,54 @@
 {% extends 'MySite/template.html' %}
 
 {% block content %}
-    <h1>addTest</h1>
+    <main class="container">
+        <form method="post" action="{% url 'addTest' %}">
+            {% csrf_token %}
+            <label for="id_name_test">
+                <h6>Название теста</h6>
+            </label>
+            <input type="text" id="id_name_test" class="form-control" required>
+            <label for="id_about_test">
+                <h6>Описание теста</h6>
+            </label>
+            <input type="text" id="id_about_test" class="form-control" required>
+            <hr>
+            <div id="questions">
+                <div id="question_1">
+                    <label>
+                        Вопрос 1
+                    </label>
+                    <input type="text" class="form-control" id="id_question_1" required>
+                    Ответы:
+                    <div class="input-group mt-3 mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <input type="checkbox" id="id_checkbox_1_1">
+                        </span>
+                        </div>
+                        <input type="text" class="form-control" required id="id_answer_1_1">
+                    </div>
+                    <div class="input-group mt-3 mb-3">
+                        <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <input type="checkbox" id="id_checkbox_1_2">
+                        </span>
+                        </div>
+                        <input type="text" class="form-control" required id="id_answer_1_2">
+                    </div>
+                </div>
+                <div class="row">
+                    <a class="btn btn-secondary" id="id_a_question_1" onclick="addAnswer(1)">Добавить ответ</a>
+                </div>
+                <hr>
+            </div>
+            <a class="btn btn-secondary btn-lg" onclick="addQuestion()">Добавить вопрос</a>
+            <button class="btn btn-primary btn-lg btn-block mt-3 col-md-3" type="submit">Добавить тест</button>
+        </form>
+    </main>
+{% endblock %}
+
+{% block script %}
+    {% load static %}
+    <script src="{% static "MySite/js/custom-js.js" %}"></script>
 {% endblock %}
