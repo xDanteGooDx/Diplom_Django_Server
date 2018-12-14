@@ -112,6 +112,9 @@ class Test(models.Model):
             ('write_Test', 'Can write test'),
         )
 
+    def __str__(self):
+        return self.test_title
+
 
 class TestResult(models.Model):
     id_test = models.ForeignKey(Test, models.CASCADE, null=True)

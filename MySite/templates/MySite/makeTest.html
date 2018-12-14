@@ -1,0 +1,8 @@
+{% extends 'MySite/template.html' %}
+
+{% block content %}
+    {% csrf_token %}
+    <h1>{{ args.Test.test_title }}</h1>
+    <h3>{{ args.Test.about }}</h3>
+    <p>Автор: {{ args.Test.author }}</p>
+{% endblock %}

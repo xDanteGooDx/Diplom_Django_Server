@@ -11,7 +11,9 @@ from MySite.models import Test, Question, Answer
 
 
 def startPage(request):
-    return render(request, "MySite/startPage.html", {'args': auth.get_user(request)})
+    args = {}
+    args['username'] = auth.get_user(request)
+    return render(request, "MySite/startPage.html", {'args': args})
 
 
 @csrf_protect
@@ -72,19 +74,24 @@ def studReg(request):
 
 
 def getBooks(request):
+    args = {}
     user = auth.get_user(request)
+    args['username'] = user
     if user.has_perm('MySite.read_Book'):
-        return render(request, "MySite/books.html", {'args': user})
+        return render(request, "MySite/books.html", {'args': args})
     else:
-        return render(request, "MySite/haventAccess.html", {'args': user})
+        return render(request, "MySite/haventAccess.html", {'args': args})
 
 
 def getTests(request):
+    args = {}
     user = auth.get_user(request)
+    args['username'] = user
     if user.has_perm('MySite.read_Test'):
-        return render(request, "MySite/tests.html", {'args': user})
+        args['tests'] = Test.objects.all().order_by("-id")
+        return render(request, "MySite/tests.html", {'args': args})
     else:
-        return render(request, "MySite/haventAccess.html", {'args': user})
+        return render(request, "MySite/haventAccess.html", {'args': args})
 
 
 @csrf_protect
@@ -174,3 +181,10 @@ def addBook(request):
     else:
         form = UploadFileForm()
     return render(request, "MySite/addBook.html", {'args': args, 'form': form})
+
+
+def makeTest(request, number):
+    args = {}
+    args['username'] = auth.get_user(request)
+    args['Test'] = Test.objects.get(id=number)
+    return render(request, "MySite/makeTest.html", {'args': args})
