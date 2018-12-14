@@ -1,8 +1,38 @@
 {% extends 'MySite/template.html' %}
 
 {% block content %}
-    {% csrf_token %}
-    <h1>{{ args.Test.test_title }}</h1>
-    <h3>{{ args.Test.about }}</h3>
-    <p>Автор: {{ args.Test.author }}</p>
+    <main class="container">
+        <div class="my-3 p-3 bg-white rounded shadow-sm">
+            <h6>{{ args.Test.test_title }}</h6>
+            <p>{{ args.Test.about }}</p>
+            <p>Автор: @{{ args.Test.author }}</p>
+        </div>
+        <form method="post" action="{% url 'makeTest' args.Test.id %}">
+        {% csrf_token %}
+            {% for item in args.Question %}
+                <div class="my-3 p-3 bg-white rounded shadow-sm">
+
+                    <h6>{{ item.question_text }}</h6>
+                    {% for item2 in args.Answer %}
+                        {% if item2.id_question.id == item.id %}
+                            <div class="media text-muted pt-3">
+                                <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                                <div class="input-group mt-3 mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <input type="checkbox" name="checkbox_{{ item.id }}_{{ item2.id }}">
+                                        </span>
+                                    </div>
+                                    <label>{{ item2.answer_text }}</label>
+                                </div>
+                                </p>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                </div>
+            {% endfor %}
+        <button class="btn btn-primary btn-lg btn-block mt-3 col-md-3" type="submit">Проверить тест</button>
+        </form>
+    </main>
 {% endblock %}

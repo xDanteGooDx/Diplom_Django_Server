@@ -24,10 +24,10 @@
                 <a class="nav-link" href="{% url 'getTests' %}">Тесты</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Помощь</a>
+                <a class="nav-link" href="{% url 'getHelp' %}">Помощь</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">О проекте</a>
+                <a class="nav-link" href="{% url 'getAbout' %}">О проекте</a>
             </li>
         </ul>
         {% if args.username.username %}
@@ -44,8 +44,8 @@
 <footer class="my-5 pt-5 text-muted text-center text-small custom-footer">
     <ul class="list-inline">
         <li class="list-inline-item"><a href="{% url 'startPage' %}">Главная страница</a></li>
-        <li class="list-inline-item"><a href="#">Помощь</a></li>
-        <li class="list-inline-item"><a href="#">О проекте</a></li>
+        <li class="list-inline-item"><a href="{% url 'getHelp' %}">Помощь</a></li>
+        <li class="list-inline-item"><a href="{% url 'getAbout' %}">О проекте</a></li>
     </ul>
 </footer>
 {% block script %}

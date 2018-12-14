@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_protect
 
 # Create your views here.
 from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm, UploadFileForm
-from MySite.models import Test, Question, Answer
+from MySite.models import Test, Question, Answer, TestResult
 
 
 def startPage(request):
@@ -184,7 +184,45 @@ def addBook(request):
 
 
 def makeTest(request, number):
+    all_score = 0
+    score = 0
     args = {}
     args['username'] = auth.get_user(request)
     args['Test'] = Test.objects.get(id=number)
-    return render(request, "MySite/makeTest.html", {'args': args})
+    args['Question'] = Question.objects.filter(id_test=number)
+    args['Answer'] = Answer.objects.all()
+    if request.method == 'POST':
+        for item in args['Question']:
+            for item2 in args['Answer'].filter(id_question=item.id):
+                if item2.is_right:
+                    if request.POST.get('checkbox_' + str(item.id) + '_' + str(item2.id)):
+                        score += 1
+            all_score += 1
+        args['all_score'] = all_score
+        args['score'] = score
+        new_result = TestResult()
+        new_result.id_test = args['Test']
+        new_result.id_student = auth.get_user(request)
+        new_result.score = score
+        new_result.attempts = TestResult.objects.filter(id_test=args['Test'],
+                                                        id_student=auth.get_user(request)).order_by('-attempts').first()
+        if new_result.attempts is not None:
+            new_result.attempts += 1
+        else:
+            new_result.attempts = 1
+        new_result.save()
+        return render(request, "MySite/getScore.html", {'args': args})
+    else:
+        return render(request, "MySite/makeTest.html", {'args': args})
+
+
+def getHelp(request):
+    args = {}
+    args['username'] = auth.get_user(request)
+    return render(request, "MySite/help.html", {'args': args})
+
+
+def getAbout(request):
+    args = {}
+    args['username'] = auth.get_user(request)
+    return render(request, "MySite/about.html", {'args': args})

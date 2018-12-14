@@ -1,0 +1,12 @@
+{% extends 'MySite/template.html' %}
+
+{% block content %}
+    <main role="main" class="container">
+        <div class="jumbotron text-center">
+            <div class="pb-md-4 text-center">
+                <h1>Ваш результат {{ args.score }} из {{ args.all_score }}</h1>
+            </div>
+            <a class="btn btn-lg btn-primary" href="{% url 'startPage' %}" role="button">На главную</a>
+        </div>
+    </main>
+{% endblock %}
