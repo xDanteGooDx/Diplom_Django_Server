@@ -204,10 +204,10 @@ def makeTest(request, number):
         new_result.id_test = args['Test']
         new_result.id_student = auth.get_user(request)
         new_result.score = score
-        new_result.attempts = TestResult.objects.filter(id_test=args['Test'],
-                                                        id_student=auth.get_user(request)).order_by('-attempts').first()
-        if new_result.attempts is not None:
-            new_result.attempts += 1
+        value = TestResult.objects.filter(id_test=args['Test'], id_student=auth.get_user(request)).order_by(
+            '-attempts').first()
+        if value is not None:
+            new_result.attempts = value.attempts + 1
         else:
             new_result.attempts = 1
         new_result.save()
