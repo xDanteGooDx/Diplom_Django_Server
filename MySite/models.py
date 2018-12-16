@@ -16,6 +16,7 @@ class Answer(models.Model):
 class Book(models.Model):
     title_book = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    icon_book = models.ImageField(blank=True, null=True)
 
     class Meta:
         db_table = 'Book'
@@ -25,14 +26,6 @@ class Book(models.Model):
         )
 
 
-class Chapter(models.Model):
-    chapter_title = models.TextField()
-    id_book = models.ForeignKey(Book, models.CASCADE)
-
-    class Meta:
-        db_table = 'Chapter'
-
-
 class Educator(models.Model):
     scientific_degree = models.TextField(blank=True, null=True)
     subject_area = models.TextField(blank=True, null=True)
@@ -40,15 +33,6 @@ class Educator(models.Model):
 
     class Meta:
         db_table = 'Educator'
-
-
-class File(models.Model):
-    path_file = models.CharField(max_length=255)
-    id_text = models.ForeignKey('Text', models.CASCADE)
-    format = models.CharField(max_length=5, blank=True, null=True)
-
-    class Meta:
-        db_table = 'File'
 
 
 class Profile(models.Model):
@@ -129,7 +113,7 @@ class TestResult(models.Model):
 
 class Text(models.Model):
     text_source = models.TextField()
-    id_chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE)
+    id_book = models.ForeignKey(Book, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'Text'

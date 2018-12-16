@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import widgets
 
-from MySite.models import Student, Profile, Educator
+from MySite.models import Student, Profile, Educator, Book
 
 
 class RegForm(UserCreationForm):
@@ -76,3 +76,12 @@ class EduRegForm(forms.ModelForm):
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
+
+
+class BookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = ('title_book', 'icon_book')
+        widgets = {
+            'title_book': forms.TextInput(attrs={'class': 'form-control'}),
+        }

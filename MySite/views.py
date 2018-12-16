@@ -6,7 +6,8 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
 
 # Create your views here.
-from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm, UploadFileForm
+from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm, UploadFileForm, BookForm
+from MySite.functions import handle_uploaded_file
 from MySite.models import Test, Question, Answer, TestResult
 
 
@@ -177,12 +178,22 @@ def addBook(request):
     args = {}
     args['username'] = auth.get_user(request)
     if request.method == 'POST':
-        a = 15
+        form = UploadFileForm(request.POST, request.FILES)
+        book = BookForm(request.POST, request.FILES)
+        if form.is_valid() and book.is_valid():
+            if not request.FILES['icon_book']:
+                f = open('MySite/static/MySite/images/default_icon.jpg', 'rb')
+                book.icon_book = f
+            book.save()
+            new_object = handle_uploaded_file(request.FILES['file'])
+            return HttpResponse(new_object)
     else:
         form = UploadFileForm()
-    return render(request, "MySite/addBook.html", {'args': args, 'form': form})
+        book = BookForm()
+        return render(request, "MySite/addBook.html", {'args': args, 'form': form, 'book': book})
 
 
+@csrf_protect
 def makeTest(request, number):
     all_score = 0
     score = 0
