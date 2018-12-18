@@ -1,3 +1,6 @@
+import base64
+import os
+
 from django.contrib import auth
 from django.contrib.auth.models import Group, User
 from django.http import HttpResponse
@@ -6,9 +9,9 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
 
 # Create your views here.
+from Diplom import settings
 from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm, UploadFileForm, BookForm
-from MySite.functions import handle_uploaded_file
-from MySite.models import Test, Question, Answer, TestResult
+from MySite.models import Test, Question, Answer, TestResult, Book, Text
 
 
 def startPage(request):
@@ -79,6 +82,7 @@ def getBooks(request):
     user = auth.get_user(request)
     args['username'] = user
     if user.has_perm('MySite.read_Book'):
+        args['books'] = Book.objects.all().order_by("-id")
         return render(request, "MySite/books.html", {'args': args})
     else:
         return render(request, "MySite/haventAccess.html", {'args': args})
@@ -181,12 +185,27 @@ def addBook(request):
         form = UploadFileForm(request.POST, request.FILES)
         book = BookForm(request.POST, request.FILES)
         if form.is_valid() and book.is_valid():
-            if not request.FILES['icon_book']:
-                f = open('MySite/static/MySite/images/default_icon.jpg', 'rb')
-                book.icon_book = f
-            book.save()
-            new_object = handle_uploaded_file(request.FILES['file'])
-            return HttpResponse(new_object)
+            book_model = Book()
+            book_model.author = auth.get_user(request)
+            book_model.title_book = book['title_book'].value()
+            if not ('icon_book' in request.FILES):
+                book_model.icon_book = 'uploads/default_icon.jpeg'
+            else:
+                book_model.icon_book = book['icon_book'].value()
+            book_model.save()
+            # =====
+            text_model = Text()
+            text_model.text_html = form['text_html'].value()
+            text_model.id_book = book_model
+            text_model.save()
+            # ======
+            path_to_html = settings.MEDIA_ROOT + '/' + os.path.splitext(text_model.text_html.name)[0] + '.files'
+            os.makedirs(path_to_html)
+            for item in request.FILES.getlist('text_source'):
+                with open(path_to_html + '/' + item.name, "wb+") as destination:
+                    for chuck in item.chunks():
+                        destination.write(chuck)
+            return render(request, "MySite/successfulAddBook.html", {'args': args})
     else:
         form = UploadFileForm()
         book = BookForm()
@@ -225,6 +244,14 @@ def makeTest(request, number):
         return render(request, "MySite/getScore.html", {'args': args})
     else:
         return render(request, "MySite/makeTest.html", {'args': args})
+
+
+def readBook(request, number):
+    args = {}
+    args['username'] = auth.get_user(request)
+    args['book'] = Book.objects.get(id=number)
+    args['content'] = Text.objects.get(id_book=number)
+    return render(request, "MySite/readBook.html", {'args': args})
 
 
 def getHelp(request):

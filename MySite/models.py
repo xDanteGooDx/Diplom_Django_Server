@@ -3,6 +3,8 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from Diplom.settings import MEDIA_ROOT
+
 
 class Answer(models.Model):
     answer_text = models.TextField()
@@ -16,7 +18,7 @@ class Answer(models.Model):
 class Book(models.Model):
     title_book = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    icon_book = models.ImageField(blank=True, null=True)
+    icon_book = models.ImageField(upload_to='uploads/%Y/%m/%d/%H/%M', blank=True, null=True)
 
     class Meta:
         db_table = 'Book'
@@ -112,7 +114,7 @@ class TestResult(models.Model):
 
 
 class Text(models.Model):
-    text_source = models.TextField()
+    text_html = models.FileField(upload_to='uploads/%Y/%m/%d/%H/%M')
     id_book = models.ForeignKey(Book, on_delete=models.CASCADE)
 
     class Meta:
