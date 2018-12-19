@@ -1,7 +1,7 @@
 {% extends 'MySite/template.html' %}
 
 {% block content %}
-    <main class="container">
+    <main class="bd-content pl-5 pr-5">
         <div class="row">
             <div class="col-md-10">
                 <a></a>
@@ -13,17 +13,15 @@
         {#    <nav class="nav nav-underline">#}
         {#        <a class="nav-link active" href="#">Dashboard</a>#}
         {#    </nav>#}
-        <div class="my-3 p-3 bg-white rounded shadow-sm">
-            <h6 class="border-bottom border-gray pb-2 mb-0">Книги, которые вы можете прочитать:</h6>
+        <h2 class="">Книги, которые вы можете прочитать:</h2>
+        <div class="row">
             {% for book in args.books %}
-                <div class="media text-muted pt-3">
+                <div class="col-md-3 col-xl-3 col-sm-3 mb-3" >
                     <a href="{% url 'readBook' book.id %}">
-                        <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-                            <strong class="d-block text-gray-dark">{{ book.title_book }}</strong>
-                            <img src="{{ book.icon_book.url }}" width="150" >
-                            <strong class="d-block text-gray-dark">{{ book.author }}</strong>
-                        </p>
+                        <strong class="d-block text-gray-dark">{{ book.title_book }}</strong>
+                        <img src="{{ book.icon_book.url }}" width="150" height="200">
                     </a>
+                    <p class="text-muted">{{ book.author }}</p>
                 </div>
             {% endfor %}
         </div>

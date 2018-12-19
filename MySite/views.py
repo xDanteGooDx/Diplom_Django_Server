@@ -5,6 +5,7 @@ from django.contrib import auth
 from django.contrib.auth.models import Group, User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from rest_framework import viewsets
 
 from django.views.decorators.csrf import csrf_protect
 
@@ -12,6 +13,7 @@ from django.views.decorators.csrf import csrf_protect
 from Diplom import settings
 from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm, UploadFileForm, BookForm
 from MySite.models import Test, Question, Answer, TestResult, Book, Text
+from .serializers import AnswerSerializers
 
 
 def startPage(request):
@@ -264,3 +266,8 @@ def getAbout(request):
     args = {}
     args['username'] = auth.get_user(request)
     return render(request, "MySite/about.html", {'args': args})
+
+
+class AnswerView(viewsets.ModelViewSet):
+    queryset = Answer.objects.all()
+    serializer_class = AnswerSerializers
