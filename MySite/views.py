@@ -6,14 +6,14 @@ from django.contrib.auth.models import Group, User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from rest_framework import viewsets
-
+from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_protect
 
 # Create your views here.
 from Diplom import settings
 from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm, UploadFileForm, BookForm
 from MySite.models import Test, Question, Answer, TestResult, Book, Text
-from .serializers import AnswerSerializers
+from .serializers import AnswerSerializers, BookSerializers, TextSerializers
 
 
 def startPage(request):
@@ -265,9 +265,34 @@ def getHelp(request):
 def getAbout(request):
     args = {}
     args['username'] = auth.get_user(request)
+    send_mail(
+        'Subject here',
+        'Here is the message.',
+        settings.EMAIL_HOST_USER,
+        ['konyukov1997@inbox.ru'],
+        fail_silently=False,
+    )
     return render(request, "MySite/about.html", {'args': args})
+
+
+def backup(request):
+    return render(request, "MySite/help.html")
+
+
+def doBackup(request):
+    return render(request, "MySite/help.html")
 
 
 class AnswerView(viewsets.ModelViewSet):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializers
+
+
+class BookView(viewsets.ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializers
+
+
+class TextView(viewsets.ModelViewSet):
+    queryset = Text.objects.all()
+    serializer_class = TextSerializers

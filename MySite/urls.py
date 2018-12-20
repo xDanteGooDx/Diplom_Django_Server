@@ -4,6 +4,8 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register('answer', views.AnswerView)
+router.register('book', views.BookView)
+router.register('text', views.TextView)
 
 urlpatterns = [
     path('', views.startPage, name='startPage'),
@@ -19,5 +21,7 @@ urlpatterns = [
     path('books/<number>/', views.readBook, name='readBook'),
     path('help/', views.getHelp, name='getHelp'),
     path('about/', views.getAbout, name='getAbout'),
-    path('rest/', include(router.urls))
+    path('rest/', include(router.urls)),
+    path('backup/', views.backup, name='backup'),
+    path('dobackup/', views.doBackup, name='doBackup'),
 ]

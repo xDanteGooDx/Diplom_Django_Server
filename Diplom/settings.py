@@ -15,9 +15,8 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-#FILE_UPLOAD_TEMP_DIR = BASE_DIR + '/temp'
-#FILE_UPLOAD_MAX_MEMORY_SIZE = 1
+# FILE_UPLOAD_TEMP_DIR = BASE_DIR + '/temp'
+# FILE_UPLOAD_MAX_MEMORY_SIZE = 1
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -30,6 +29,15 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # Application definition
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "konyukov1997@gmail.com"
+EMAIL_HOST_PASSWORD = ""
+EMAIL_USE_TLS = True
+
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 INSTALLED_APPS = [
     'MySite',
@@ -124,4 +132,3 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
