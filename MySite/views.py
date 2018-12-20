@@ -8,12 +8,13 @@ from django.shortcuts import render, redirect
 from rest_framework import viewsets
 from django.core.mail import send_mail
 from django.views.decorators.csrf import csrf_protect
+from django.db import connection
 
 # Create your views here.
 from Diplom import settings
 from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm, UploadFileForm, BookForm
 from MySite.models import Test, Question, Answer, TestResult, Book, Text
-from .serializers import AnswerSerializers, BookSerializers, TextSerializers
+from .serializers import AnswerSerializers, BookSerializers, TextSerializers, TestSerializers
 
 
 def startPage(request):
@@ -265,21 +266,26 @@ def getHelp(request):
 def getAbout(request):
     args = {}
     args['username'] = auth.get_user(request)
-    send_mail(
-        'Subject here',
-        'Here is the message.',
-        settings.EMAIL_HOST_USER,
-        ['konyukov1997@inbox.ru'],
-        fail_silently=False,
-    )
+    # send_mail(
+    #     'Subject here',
+    #     'Here is the message.',
+    #     settings.EMAIL_HOST_USER,
+    #     ['konyukov1997@inbox.ru'],
+    #     fail_silently=False,
+    # )
     return render(request, "MySite/about.html", {'args': args})
 
 
 def backup(request):
+    cursor = connection.cursor()
+    cursor.execute("USE master exec backup_db")
+
     return render(request, "MySite/help.html")
 
 
-def doBackup(request):
+def restore(request):
+    cursor = connection.cursor()
+    cursor.execute("USE master exec restore_db")
     return render(request, "MySite/help.html")
 
 
@@ -296,3 +302,8 @@ class BookView(viewsets.ModelViewSet):
 class TextView(viewsets.ModelViewSet):
     queryset = Text.objects.all()
     serializer_class = TextSerializers
+
+
+class TestView(viewsets.ModelViewSet):
+    queryset = Test.objects.all()
+    serializer_class = TestSerializers

@@ -18,3 +18,9 @@ class TextSerializers(serializers.ModelSerializer):
     class Meta:
         model = Text
         fields = ('id', 'text_html', 'id_book')
+
+
+class TestSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Test
+        fields = ('id', 'test_title', 'author', 'about')
