@@ -16,6 +16,7 @@ urlpatterns = [
     path('educator_registration/', views.eduReg, name='eduReg'),
     path('books/', views.getBooks, name='getBooks'),
     path('books/addbook', views.addBook, name='addBook'),
+    path('books/addbook/editor', views.editor, name='editor'),
     path('tests/', views.getTests, name='getTests'),
     path('tests/addtest', views.addTest, name='addTest'),
     path('tests/<number>/', views.makeTest, name='makeTest'),

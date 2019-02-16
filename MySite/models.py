@@ -25,6 +25,9 @@ class Book(models.Model):
             ('write_Book', 'Can write book'),
         )
 
+    def __str__(self):
+        return self.title_book
+
 
 class Educator(models.Model):
     scientific_degree = models.TextField(blank=True, null=True)

@@ -1,0 +1,32 @@
+{% extends 'MySite/template.html' %}
+
+{% block content %}
+    <main class="container">
+        <form method="post" action="{% url 'editor' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="id_title_book">
+                Введите название книги:
+            </label>
+            {{ book.title_book }}
+            <p>
+                Добавьте обложку(необязательно)
+            </p>
+            {{ book.icon_book }}
+
+            <textarea name="editor1" id="editor1" rows="10" cols="80">
+                Добавьте текст здесь.
+            </textarea>
+
+
+            <button class="btn btn-primary btn-lg btn-block mt-3 col-md-3" type="submit">Сохранить</button>
+        </form>
+
+        {% load static %}
+        <script src="{% static "MySite/js/ckeditor.js" %}"></script>
+        <script>
+            // Replace the <textarea id="editor1"> with a CKEditor
+            // instance, using default configuration.
+            CKEDITOR.replace('editor1');
+        </script>
+    </main>
+{% endblock %}

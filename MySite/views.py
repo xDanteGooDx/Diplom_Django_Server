@@ -1,6 +1,10 @@
 import base64
 import os
+import socket
+import subprocess
+import time
 
+from django.core import serializers
 from django.contrib import auth
 from django.contrib.auth.models import Group, User
 from django.http import HttpResponse
@@ -215,6 +219,26 @@ def addBook(request):
         return render(request, "MySite/addBook.html", {'args': args, 'form': form, 'book': book})
 
 
+def editor(request):
+    args = {}
+    args['username'] = auth.get_user(request)
+    if request.method == 'POST':
+        book = BookForm(request.POST, request.FILES)
+        if book.is_valid():
+            book_model = Book()
+            book_model.author = auth.get_user(request)
+            book_model.title_book = book['title_book'].value()
+            if not ('icon_book' in request.FILES):
+                book_model.icon_book = 'uploads/default_icon.jpeg'
+            else:
+                book_model.icon_book = book['icon_book'].value()
+            book_model.save()
+            return render(request, "MySite/successfulAddBook.html", {'args': args})
+    else:
+        book = BookForm()
+        return render(request, "MySite/editor.html", {'args': args, 'book': book})
+
+
 @csrf_protect
 def makeTest(request, number):
     all_score = 0
@@ -273,6 +297,9 @@ def getAbout(request):
     #     ['konyukov1997@inbox.ru'],
     #     fail_silently=False,
     # )
+    # SMTP_send_message('konyukov1997@gmail.com', 'dantegood',
+    #                   ['konyukov1997@inbox.ru', 'konyukov1997@icloud.com'], 'test',
+    #                   str(auth.get_user(request).username) + + str(auth.get_user(request).password))
     return render(request, "MySite/about.html", {'args': args})
 
 
@@ -280,13 +307,13 @@ def backup(request):
     cursor = connection.cursor()
     cursor.execute("USE master exec backup_db")
 
-    return render(request, "MySite/help.html")
+    return HttpResponse("<h1> Вы сделали резервную копию</h1")
 
 
 def restore(request):
     cursor = connection.cursor()
     cursor.execute("USE master exec restore_db")
-    return render(request, "MySite/help.html")
+    return HttpResponse("<h1> Вы восстановили из резервной копии</h1")
 
 
 class AnswerView(viewsets.ModelViewSet):
