@@ -21,6 +21,7 @@ urlpatterns = [
     path('tests/addtest', views.addTest, name='addTest'),
     path('tests/<number>/', views.makeTest, name='makeTest'),
     path('books/<number>/', views.readBook, name='readBook'),
+    path('books/<number>/<header>', views.readHeaderBook, name='readHeaderBook'),
     path('help/', views.getHelp, name='getHelp'),
     path('about/', views.getAbout, name='getAbout'),
     path('rest/', include(router.urls)),

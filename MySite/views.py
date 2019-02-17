@@ -1,4 +1,5 @@
 import base64
+import datetime
 import os
 import socket
 import string
@@ -213,77 +214,56 @@ def addBook(request):
                 with open(path_to_html + '/' + item.name, "wb+") as destination:
                     for chuck in item.chunks():
                         destination.write(chuck)
-
-            head_text = ""
+            # --------------
             path = settings.MEDIA_ROOT + '/' + text_model.text_html.name
             file = open(path, "r")
-            src = 'src="'
+            text = ''
             while True:
                 line = file.readline()
-                head_text += line
-                if not line or (line.find('<body') >= 0):
-                    break
-            header_flag = False
-            name_header = 1
-            text_header = ''
-            text_header_flag = False
-            new_header = None
-            while True:
-                line = file.readline()
-                if line.find('<h1>') >= 0:
-                    text_header_flag = True
-                    if header_flag == False:
-                        new_header = open(
-                            settings.MEDIA_ROOT + '/' + os.path.splitext(text_model.text_html.name)[0] + '_' + str(
-                                name_header) + '.html',
-                            'w')
-                        new_header.write(head_text)
-                        header_flag = True
-                    else:
-                        new_header.write('</body>\n')
-                        new_header.write('</html>')
-                        new_header.close()
-                        new_header_model = Header()
-                        new_header_model.id_book = book_model
-                        new_header_model.text_header = text_header.replace('<h1>', '').replace('\n', '').replace('\t',
-                                                                                                                 '')
-                        new_header_model.save()
-                        text_header = ''
-                        new_text = Text()
-                        new_text.id_header = new_header_model
-                        new_text.text_html = settings.MEDIA_ROOT + '/' + os.path.splitext(text_model.text_html.name)[
-                            0] + '_' + str(
-                            name_header) + '.html'
-                        new_text.save()
-                        name_header += 1
-                        new_header = open(
-                            settings.MEDIA_ROOT + '/' + os.path.splitext(text_model.text_html.name)[0] + '_' + str(
-                                name_header) + '.html',
-                            'w')
-                        new_header.write(head_text + line)
-                if line.find('</h1>') >= 0:
-                    text_header_flag = False
-                if header_flag:
-                    new_header.write(line)
-                    if text_header_flag:
-                        text_header += line
-                if not line and header_flag:
-                    new_header.close()
-                    new_header_model = Header()
-                    new_header_model.id_book = book_model
-                    new_header_model.text_header = text_header.replace('<h1>', '').replace('\n', '').replace('\t',
-                                                                                                             '')
-                    new_header_model.save()
-                    text_header = ''
-                    new_text = Text()
-                    new_text.id_header = new_header_model
-                    new_text.text_html = settings.MEDIA_ROOT + '/' + os.path.splitext(text_model.text_html.name)[
-                        0] + '_' + str(
-                        name_header) + '.html'
-                    new_text.save()
-                    break
+                text += line
                 if not line:
                     break
+            # text = text.replace('\r', '').replace('\n', '').replace('\t', '')
+            new_text = []
+            text = text.split('<h1>')
+            for item in text:
+                new_text.append(item.split('</h1>'))
+            new_text[0] = new_text[0][0].split('<body>')
+            # new_header = open(
+            #     settings.MEDIA_ROOT + '/' + os.path.splitext(text_model.text_html.name)[0] + '_' + str(
+            #         name_header) + '.html',
+            #     'w')
+            num_header = 1
+            now = datetime.datetime.now()
+            if len(new_text) > 1:
+                for item in new_text:
+                    if len(item) == 1:
+                        continue
+                    path = settings.MEDIA_ROOT + '/' + os.path.splitext(text_model.text_html.name)[0] + '_' + str(
+                        num_header) + '.html'
+                    num_header += 1
+                    file = open(path, "w", encoding='utf-8')
+                    if len(new_text[0]) > 1:
+                        file.write(new_text[0][0] + '<h1>' + item[0] + '</h1>' + item[1] + '</body></html>')
+                    else:
+                        file.write('<h1>' + item[0] + '</h1>' + item[1] + '</body></html>')
+                    file.close()
+                    new_header = Header()
+                    new_header.id_book = book_model
+                    text_for_header = []
+                    text_for_header.append(item[0].split('>'))
+                    if len(text_for_header) > 1:
+                        text_for_header2 = []
+                        for item in text_for_header:
+                            text_for_header2.append(item.split('</'))
+                        new_header.text_header = text_for_header[1][0]
+                    else:
+                        new_header.text_header = item[0]
+                    new_header.save()
+                    new_Text = Text()
+                    new_Text.id_header = new_header
+                    new_Text.text_html = path
+                    new_Text.save()
             return render(request, "MySite/successfulAddBook.html", {'args': args})
     else:
         form = UploadFileForm()
@@ -305,6 +285,53 @@ def editor(request):
             else:
                 book_model.icon_book = book['icon_book'].value()
             book_model.save()
+            # -----------
+            text = request.POST['editor1']
+            now = datetime.datetime.now()
+            fullText = FullText()
+            fullText.text_html = 'uploads/' + str(now.year) + '/' + str(now.month) + '/' + str(now.day) + '/' + str(
+                now.hour) + '/' + str(now.minute) + '/' + 'text_of_editor.html'
+            fullText.id_book = book_model
+            fullText.save()
+            os.makedirs(settings.MEDIA_ROOT + '/uploads/' + str(now.year) + '/' + str(now.month) + '/' + str(
+                now.day) + '/' + str(
+                now.hour) + '/' + str(now.minute))
+            path = settings.MEDIA_ROOT + '/uploads/' + str(now.year) + '/' + str(now.month) + '/' + str(
+                now.day) + '/' + str(
+                now.hour) + '/' + str(now.minute) + '/' + 'text_of_editor.html'
+            file = open(path, "w", encoding='utf-8')
+            file.write(text)
+            file.close()
+            # ----------
+            num_header = 1
+            text = text.replace('\r', '').replace('\n', '').replace('\t', '')
+            new_text = []
+            text = text.split('<h1>')
+            for item in text:
+                new_text.append(item.split('</h1>'))
+            new_text[0] = new_text[0][0].split('<body>')
+            if len(new_text) > 1:
+                for item in new_text:
+                    if len(item) == 1:
+                        continue
+                    path = settings.MEDIA_ROOT + '/uploads/' + str(now.year) + '/' + str(now.month) + '/' + str(
+                        now.day) + '/' + str(
+                        now.hour) + '/' + str(now.minute) + '/' + 'text_of_editor_' + str(num_header) + '.html'
+                    num_header += 1
+                    file = open(path, "w", encoding='utf-8')
+                    if len(new_text[0]) > 1:
+                        file.write(new_text[0][0] + '<h1>' + item[0] + '</h1>' + item[1] + '</body></html>')
+                    else:
+                        file.write('<h1>' + item[0] + '</h1>' + item[1] + '</body></html>')
+                    file.close()
+                    new_header = Header()
+                    new_header.id_book = book_model
+                    new_header.text_header = item[0]
+                    new_header.save()
+                    new_Text = Text()
+                    new_Text.id_header = new_header
+                    new_Text.text_html = path
+                    new_Text.save()
             return render(request, "MySite/successfulAddBook.html", {'args': args})
     else:
         book = BookForm()
@@ -350,6 +377,16 @@ def readBook(request, number):
     args['username'] = auth.get_user(request)
     args['book'] = Book.objects.get(id=number)
     args['content'] = FullText.objects.get(id_book=number)
+    args['header'] = Header.objects.all().filter(id_book=number)
+    return render(request, "MySite/readBook.html", {'args': args})
+
+
+def readHeaderBook(request, number, header):
+    args = {}
+    args['username'] = auth.get_user(request)
+    args['book'] = Book.objects.get(id=number)
+    args['content'] = Text.objects.get(id_header=header)
+    args['header'] = Header.objects.all().filter(id_book=number)
     return render(request, "MySite/readBook.html", {'args': args})
 
 
