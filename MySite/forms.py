@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import widgets
 
-from MySite.models import Student, Profile, Educator, Book, Text
+from MySite.models import Student, Profile, Educator, Book, Text, FullText
 
 
 class RegForm(UserCreationForm):
@@ -76,7 +76,7 @@ class EduRegForm(forms.ModelForm):
 
 class UploadFileForm(forms.ModelForm):
     class Meta:
-        model = Text
+        model = FullText
         fields = ('text_html',)
 
 

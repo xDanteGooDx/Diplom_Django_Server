@@ -1,6 +1,7 @@
 import base64
 import os
 import socket
+import string
 import subprocess
 import time
 
@@ -17,7 +18,7 @@ from django.db import connection
 # Create your views here.
 from Diplom import settings
 from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm, UploadFileForm, BookForm
-from MySite.models import Test, Question, Answer, TestResult, Book, Text
+from MySite.models import Test, Question, Answer, TestResult, Book, Text, FullText, Header
 from .serializers import AnswerSerializers, BookSerializers, TextSerializers, TestSerializers
 
 
@@ -191,7 +192,7 @@ def addBook(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         book = BookForm(request.POST, request.FILES)
-        if form.is_valid() and book.is_valid():
+        if book.is_valid() and form.is_valid():
             book_model = Book()
             book_model.author = auth.get_user(request)
             book_model.title_book = book['title_book'].value()
@@ -201,7 +202,7 @@ def addBook(request):
                 book_model.icon_book = book['icon_book'].value()
             book_model.save()
             # =====
-            text_model = Text()
+            text_model = FullText()
             text_model.text_html = form['text_html'].value()
             text_model.id_book = book_model
             text_model.save()
@@ -212,6 +213,77 @@ def addBook(request):
                 with open(path_to_html + '/' + item.name, "wb+") as destination:
                     for chuck in item.chunks():
                         destination.write(chuck)
+
+            head_text = ""
+            path = settings.MEDIA_ROOT + '/' + text_model.text_html.name
+            file = open(path, "r")
+            src = 'src="'
+            while True:
+                line = file.readline()
+                head_text += line
+                if not line or (line.find('<body') >= 0):
+                    break
+            header_flag = False
+            name_header = 1
+            text_header = ''
+            text_header_flag = False
+            new_header = None
+            while True:
+                line = file.readline()
+                if line.find('<h1>') >= 0:
+                    text_header_flag = True
+                    if header_flag == False:
+                        new_header = open(
+                            settings.MEDIA_ROOT + '/' + os.path.splitext(text_model.text_html.name)[0] + '_' + str(
+                                name_header) + '.html',
+                            'w')
+                        new_header.write(head_text)
+                        header_flag = True
+                    else:
+                        new_header.write('</body>\n')
+                        new_header.write('</html>')
+                        new_header.close()
+                        new_header_model = Header()
+                        new_header_model.id_book = book_model
+                        new_header_model.text_header = text_header.replace('<h1>', '').replace('\n', '').replace('\t',
+                                                                                                                 '')
+                        new_header_model.save()
+                        text_header = ''
+                        new_text = Text()
+                        new_text.id_header = new_header_model
+                        new_text.text_html = settings.MEDIA_ROOT + '/' + os.path.splitext(text_model.text_html.name)[
+                            0] + '_' + str(
+                            name_header) + '.html'
+                        new_text.save()
+                        name_header += 1
+                        new_header = open(
+                            settings.MEDIA_ROOT + '/' + os.path.splitext(text_model.text_html.name)[0] + '_' + str(
+                                name_header) + '.html',
+                            'w')
+                        new_header.write(head_text + line)
+                if line.find('</h1>') >= 0:
+                    text_header_flag = False
+                if header_flag:
+                    new_header.write(line)
+                    if text_header_flag:
+                        text_header += line
+                if not line and header_flag:
+                    new_header.close()
+                    new_header_model = Header()
+                    new_header_model.id_book = book_model
+                    new_header_model.text_header = text_header.replace('<h1>', '').replace('\n', '').replace('\t',
+                                                                                                             '')
+                    new_header_model.save()
+                    text_header = ''
+                    new_text = Text()
+                    new_text.id_header = new_header_model
+                    new_text.text_html = settings.MEDIA_ROOT + '/' + os.path.splitext(text_model.text_html.name)[
+                        0] + '_' + str(
+                        name_header) + '.html'
+                    new_text.save()
+                    break
+                if not line:
+                    break
             return render(request, "MySite/successfulAddBook.html", {'args': args})
     else:
         form = UploadFileForm()
@@ -277,7 +349,7 @@ def readBook(request, number):
     args = {}
     args['username'] = auth.get_user(request)
     args['book'] = Book.objects.get(id=number)
-    args['content'] = Text.objects.get(id_book=number)
+    args['content'] = FullText.objects.get(id_book=number)
     return render(request, "MySite/readBook.html", {'args': args})
 
 

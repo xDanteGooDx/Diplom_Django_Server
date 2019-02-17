@@ -114,9 +114,25 @@ class TestResult(models.Model):
         db_table = 'TestResult'
 
 
+class Header(models.Model):
+    id_book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    text_header = models.TextField()
+
+    class Meta:
+        db_table = 'Header'
+
+
 class Text(models.Model):
+    text_html = models.FileField(upload_to='uploads/%Y/%m/%d/%H/%M')
+    id_header = models.ForeignKey(Header, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'Text'
+
+
+class FullText(models.Model):
     text_html = models.FileField(upload_to='uploads/%Y/%m/%d/%H/%M')
     id_book = models.ForeignKey(Book, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'Text'
+        db_table = 'FullText'
