@@ -4,9 +4,7 @@
     <main class="bd-content pl-5 pr-5">
         <div class="row">
             <div class="col-md-3">
-                {% if args.access %}
-                    <a class="btn-block btn btn-primary" href="{% url 'getYourBooks' %}">Книги, добавленные Вами</a>
-                {% endif %}
+                <a class="btn-block btn btn-primary" href="{% url 'getBooks' %}">Все книги</a>
             </div>
             <div class="col-md-2">
                 <p class="text-right mt-1 lead">Найти книгу:</p>
@@ -23,15 +21,13 @@
                 </div>
             </form>
             <div class="d-block text-right order-md-2">
-                {% if args.access %}
-                    <a class="btn-block btn btn-primary" href="{% url 'addBook' %}">Добавить книгу</a>
-                {% endif %}
+                <a class="btn-block btn btn-primary" href="{% url 'addBook' %}">Добавить книгу</a>
             </div>
         </div>
         {#    <nav class="nav nav-underline">#}
         {#        <a class="nav-link active" href="#">Dashboard</a>#}
         {#    </nav>#}
-        <h2 class="">Книги, которые вы можете прочитать:</h2>
+        <h2 class="">Книги, добавленные Вами:</h2>
         <div class="row">
             {% for book in args.books %}
                 <div class="col-md-3 col-xl-3 col-sm-3 mb-3">

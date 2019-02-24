@@ -1,12 +1,5 @@
 from django.urls import path, include
 from . import views
-from rest_framework import routers
-
-router = routers.DefaultRouter()
-router.register('answer', views.AnswerView)
-router.register('book', views.BookView)
-router.register('text', views.TextView)
-router.register('test', views.TestView)
 
 urlpatterns = [
     path('', views.startPage, name='startPage'),
@@ -15,6 +8,8 @@ urlpatterns = [
     path('student_registration/', views.studReg, name='studReg'),
     path('educator_registration/', views.eduReg, name='eduReg'),
     path('books/', views.getBooks, name='getBooks'),
+    path('books/yourbooks', views.getYourBooks, name='getYourBooks'),
+    path('books/find', views.findBook, name='findBook'),
     path('books/addbook', views.addBook, name='addBook'),
     path('books/addbook/editor', views.editor, name='editor'),
     path('tests/', views.getTests, name='getTests'),
@@ -24,7 +19,7 @@ urlpatterns = [
     path('books/<number>/<header>', views.readHeaderBook, name='readHeaderBook'),
     path('help/', views.getHelp, name='getHelp'),
     path('about/', views.getAbout, name='getAbout'),
-    path('rest/', include(router.urls)),
+    path('api/', include('MySite.url_rest')),
     path('backup/', views.backup, name='backup'),
     path('restore/', views.restore, name='restore'),
 ]

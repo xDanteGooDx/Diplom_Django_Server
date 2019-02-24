@@ -6,6 +6,7 @@ import string
 import subprocess
 import time
 
+from django.contrib.auth import authenticate
 from django.core import serializers
 from django.contrib import auth
 from django.contrib.auth.models import Group, User
@@ -13,10 +14,16 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from rest_framework import viewsets
 from django.core.mail import send_mail
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.db import connection
 
 # Create your views here.
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_200_OK
+
 from Diplom import settings
 from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm, UploadFileForm, BookForm
 from MySite.models import Test, Question, Answer, TestResult, Book, Text, FullText, Header
@@ -90,11 +97,29 @@ def getBooks(request):
     args = {}
     user = auth.get_user(request)
     args['username'] = user
+    if user.has_perm('MySite.write_Book'):
+        args['access'] = True
+    else:
+        args['access'] = False
     if user.has_perm('MySite.read_Book'):
         args['books'] = Book.objects.all().order_by("-id")
         return render(request, "MySite/books.html", {'args': args})
     else:
         return render(request, "MySite/haventAccess.html", {'args': args})
+
+
+def findBook(request):
+    args = {}
+    user = auth.get_user(request)
+    args['username'] = user
+    if request.method == 'POST':
+        text = request.POST.get('find_book')
+        args['books'] = Book.objects.filter(title_book__contains=text)
+        if user.has_perm('MySite.write_Book'):
+            args['access'] = True
+        else:
+            args['access'] = False
+        return render(request, "MySite/books.html", {'args': args})
 
 
 def getTests(request):
@@ -252,11 +277,11 @@ def addBook(request):
                     new_header.id_book = book_model
                     text_for_header = []
                     text_for_header.append(item[0].split('>'))
-                    if len(text_for_header) > 1:
+                    if len(text_for_header[0]) > 1:
                         text_for_header2 = []
-                        for item in text_for_header:
+                        for item in text_for_header[0]:
                             text_for_header2.append(item.split('</'))
-                        new_header.text_header = text_for_header[1][0]
+                        new_header.text_header = text_for_header2[1][0]
                     else:
                         new_header.text_header = item[0]
                     new_header.save()
@@ -381,6 +406,19 @@ def readBook(request, number):
     return render(request, "MySite/readBook.html", {'args': args})
 
 
+def getYourBooks(request):
+    args = {}
+    user = auth.get_user(request)
+    args['username'] = user
+    args['books'] = Book.objects.all().order_by("-id").filter(author=user)
+    return render(request, "MySite/yourBooks.html", {'args': args})
+    # if user.has_perm('MySite.read_Test'):
+    #     args['tests'] = Test.objects.all().order_by("-id")
+    #     return render(request, "MySite/tests.html", {'args': args})
+    # else:
+    #     return render(request, "MySite/haventAccess.html", {'args': args})
+
+
 def readHeaderBook(request, number, header):
     args = {}
     args['username'] = auth.get_user(request)
@@ -443,3 +481,21 @@ class TextView(viewsets.ModelViewSet):
 class TestView(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializers
+
+
+@csrf_exempt
+@api_view(["POST"])
+@permission_classes((AllowAny,))
+def api_login(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+    if username is None or password is None:
+        return Response({'error': 'Please provide both username and password'},
+                        status=HTTP_400_BAD_REQUEST)
+    user = authenticate(username=username, password=password)
+    if not user:
+        return Response({'error': 'Invalid Credentials'},
+                        status=HTTP_404_NOT_FOUND)
+    token, _ = Token.objects.get_or_create(user=user)
+    return Response({'token': token.key},
+                    status=HTTP_200_OK)
