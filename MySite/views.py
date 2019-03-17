@@ -27,7 +27,8 @@ from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP
 from Diplom import settings
 from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm, UploadFileForm, BookForm
 from MySite.models import Test, Question, Answer, TestResult, Book, Text, FullText, Header
-from .serializers import AnswerSerializers, BookSerializers, TextSerializers, TestSerializers
+from .serializers import AnswerSerializers, BookSerializers, TextSerializers, TestSerializers, UserSerializers, \
+    FullTextSerializers, HeaderSerializers
 
 
 def startPage(request):
@@ -483,6 +484,16 @@ class TestView(viewsets.ModelViewSet):
     serializer_class = TestSerializers
 
 
+class UserView(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializers
+
+
+class FullTextView(viewsets.ModelViewSet):
+    queryset = FullText.objects.all()
+    serializer_class = FullTextSerializers
+
+
 @csrf_exempt
 @api_view(["POST"])
 @permission_classes((AllowAny,))
@@ -499,3 +510,27 @@ def api_login(request):
     token, _ = Token.objects.get_or_create(user=user)
     return Response({'token': token.key},
                     status=HTTP_200_OK)
+
+
+@permission_classes((AllowAny,))
+@api_view(['GET'])
+def getFullText(request, num):
+    answer = FullText.objects.filter(id_book=num)
+    serializers = FullTextSerializers(answer, many=True)
+    return Response(serializers.data)
+
+
+@permission_classes((AllowAny,))
+@api_view(['GET'])
+def getHeader(request, num):
+    answer = Header.objects.filter(id_book=num)
+    serializers = HeaderSerializers(answer, many=True)
+    return Response(serializers.data)
+
+
+@permission_classes((AllowAny,))
+@api_view(['GET'])
+def getText(request, num):
+    answer = Text.objects.filter(id_header=num)
+    serializers = TextSerializers(answer, many=True)
+    return Response(serializers.data)
