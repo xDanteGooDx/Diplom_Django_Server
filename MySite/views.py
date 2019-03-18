@@ -28,7 +28,7 @@ from Diplom import settings
 from MySite.forms import RegForm, StudRegForm, ProfileForm, EduRegForm, UploadFileForm, BookForm
 from MySite.models import Test, Question, Answer, TestResult, Book, Text, FullText, Header
 from .serializers import AnswerSerializers, BookSerializers, TextSerializers, TestSerializers, UserSerializers, \
-    FullTextSerializers, HeaderSerializers
+    FullTextSerializers, HeaderSerializers, QuestionSerializers
 
 
 def startPage(request):
@@ -533,4 +533,20 @@ def getHeader(request, num):
 def getText(request, num):
     answer = Text.objects.filter(id_header=num)
     serializers = TextSerializers(answer, many=True)
+    return Response(serializers.data)
+
+
+@permission_classes((AllowAny,))
+@api_view(['GET'])
+def getQuestion(request, num):
+    answer = Question.objects.filter(id_test=num)
+    serializers = QuestionSerializers(answer, many=True)
+    return Response(serializers.data)
+
+
+@permission_classes((AllowAny,))
+@api_view(['GET'])
+def getAnswer(request, num):
+    answer = Answer.objects.filter(id_question=num)
+    serializers = AnswerSerializers(answer, many=True)
     return Response(serializers.data)

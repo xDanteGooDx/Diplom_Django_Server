@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from MySite.models import Answer, Book, Text, Test, FullText, Header
+from MySite.models import Answer, Book, Text, Test, FullText, Header, Question
 
 
 class AnswerSerializers(serializers.ModelSerializer):
@@ -50,3 +50,15 @@ class TextSerializers(serializers.ModelSerializer):
     class Meta:
         model = Text
         fields = ('id', 'text_html', 'id_header')
+
+
+class QuestionSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ('id', 'question_text', 'id_test', 'get_score')
+
+
+class AnswerSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = ('id', 'answer_text', 'id_question', 'is_right')

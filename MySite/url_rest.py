@@ -15,5 +15,8 @@ urlpatterns = [
     path('getfulltext/<num>', views.getFullText, name='getFullText'),
     path('getheader/<num>', views.getHeader, name='getHeader'),
     path('gettext/<num>', views.getText, name='getText'),
+    path('getquestion/<num>', views.getQuestion, name='getQuestion'),
+    path('getanswer/<num>', views.getAnswer, name='getAnswer'),
     path('', include(router.urls)),
+
 ]
