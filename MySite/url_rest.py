@@ -17,6 +17,8 @@ urlpatterns = [
     path('gettext/<num>', views.getText, name='getText'),
     path('getquestion/<num>', views.getQuestion, name='getQuestion'),
     path('getanswer/<num>', views.getAnswer, name='getAnswer'),
+    path('download_resource/<num>', views.downloadBookResource, name='downloadBook'),
+    path('send_score/<num_test>/<num_score>', views.send_score, name='send_score'),
     path('', include(router.urls)),
 
 ]

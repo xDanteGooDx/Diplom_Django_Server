@@ -550,3 +550,33 @@ def getAnswer(request, num):
     answer = Answer.objects.filter(id_question=num)
     serializers = AnswerSerializers(answer, many=True)
     return Response(serializers.data)
+
+
+@permission_classes((AllowAny,))
+@api_view(['GET'])
+def downloadBookResource(request, num):
+    fulltext = FullText.objects.get(id_book=num)
+    path = settings.BASE_DIR + '/media/' + os.path.splitext(fulltext.text_html.name)[0] + '.files/'
+    files = os.listdir(path)
+    fullfiles = []
+    for item in files:
+        fullfiles.append('/media/' + os.path.splitext(fulltext.text_html.name)[0] + '.files/' + item)
+
+    args = []
+    for item in range(0, len(fullfiles)):
+        args.append({'path': fullfiles[item]})
+    return Response(args)
+
+
+@permission_classes((AllowAny,))
+@api_view(['POST'])
+def send_score(request, num_test, num_score):
+    new_result = TestResult()
+    new_result.score = int(num_score)
+    new_result.id_student = request.user
+    new_result.id_test = Test.objects.get(id=num_test)
+    answer = TestResult.objects.filter(id_test=num_test, id_student=request.user)
+    new_result.attempts = answer.count() + 1
+    new_result.save()
+    return Response({'good': 'good'},
+                    status=HTTP_200_OK)
